@@ -2,7 +2,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import mongoose from 'mongoose';
-import { authRoutes } from './routes';
+import { authRoutes, notificationRoutes, apiKeyRoutes } from './routes';
 import { databaseUrl } from './config';
 
 async function main() {
@@ -12,6 +12,10 @@ async function main() {
   app.use(bodyParser.json());
 
   app.use('/auth', authRoutes);
+
+  app.use('/notification', notificationRoutes);
+
+  app.use('/api-key', apiKeyRoutes);
 
   app.get('/', (req, res) => {
     res.status(200).json('Hey');

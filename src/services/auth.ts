@@ -15,6 +15,7 @@ export interface DecodedRefreshToken {
   expiration: Date;
 }
 
+// Create a new token and refresh token.
 async function generateTokenAndRefreshToken(user: IUser) {
   const token = jwt.sign({
     userId: user._id,
@@ -44,6 +45,7 @@ async function generateTokenAndRefreshToken(user: IUser) {
   }
 }
 
+// Handle sign up.
 export async function signUp({ email, password }: { email: string; password: string }) {
   try {
     const userWithMatchedEmail = await User.findOne({
@@ -69,6 +71,7 @@ export async function signUp({ email, password }: { email: string; password: str
   }
 }
 
+// Handle login.
 export async function login({ email, password }: { email: string; password: string }) {
   try {
     const user = await User.findOne({
@@ -100,6 +103,7 @@ export async function login({ email, password }: { email: string; password: stri
   }
 }
 
+// Generate a new token from the refresh token.
 export async function refreshToken(token: string) {
   try {
     const refreshToken = await RefreshToken.findOne({
@@ -133,6 +137,7 @@ export async function refreshToken(token: string) {
   }
 }
 
+// Delete a specific refresh token.
 export async function deleteRefreshToken(token: string) {
   try {
     await RefreshToken.findOneAndDelete({
@@ -143,6 +148,7 @@ export async function deleteRefreshToken(token: string) {
   }
 }
 
+// Delete all refresh tokens for a user.
 export async function deleteUserRefreshTokens(token: string) {
   try {
     const { email } = jwt.verify(token, jwtSecret) as DecodedToken;
@@ -164,6 +170,7 @@ export async function deleteUserRefreshTokens(token: string) {
   }
 }
 
+// Reset email.
 export async function resetEmail({ token, newEmail }: { token: string, newEmail: string }) {
   try {
     const { userId } = jwt.verify(token, jwtSecret) as DecodedToken;
@@ -204,6 +211,7 @@ export async function resetEmail({ token, newEmail }: { token: string, newEmail:
   }
 }
 
+// Get all users.
 export async function getUsers() {
   try {
     const users = await User.find().sort({ createdAt: -1 });

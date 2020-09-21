@@ -9,12 +9,14 @@ export function isAuth(req: Request, res: Response, next: NextFunction) {
   try {
     const { token } = req.body;
 
-    const { expiration } = jwt.verify(token, jwtSecret) as authServices.DecodedToken;
+    const { userId, expiration } = jwt.verify(token, jwtSecret) as authServices.DecodedToken;
 
     if (moment(expiration).isBefore(moment())) {
       const error = new HttpError('Invalid token.', 401);
       throw error;
     }
+
+    req.userId = userId;
 
     next();
 
