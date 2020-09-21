@@ -1,5 +1,5 @@
-import * as AuthServices from './auth';
+import * as authServices from './auth';
 
 export {
-  AuthServices,
+  authServices,
 }

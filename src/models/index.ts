@@ -1,7 +1,3 @@
-import HttpError from './httpError';
-import User from './user';
-
-export {
-  HttpError,
-  User,
-}
+export * from './httpError';
+export * from './user';
+export * from './refresh-token';

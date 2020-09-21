@@ -1,4 +1,4 @@
-class HttpError extends Error {
+export class HttpError extends Error {
   statusCode: number;
 
   constructor(message: string | undefined, statusCode: number | undefined) {
@@ -7,5 +7,3 @@ class HttpError extends Error {
     this.statusCode = statusCode || 500;
   }
 }
-
-export default HttpError;

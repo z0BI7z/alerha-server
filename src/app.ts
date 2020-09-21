@@ -17,10 +17,17 @@ async function main() {
     res.status(200).json('Hey');
   });
 
+  app.use((req, res) => {
+    res.status(404).json({
+      message: 'Does not exist.'
+    });
+  });
+
   await mongoose.connect(databaseUrl, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-  })
+    useCreateIndex: true,
+  });
 
   app.listen(3000);
 }
