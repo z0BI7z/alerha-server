@@ -1,5 +1,5 @@
-import { Schema, model, Document } from 'mongoose';
-import { IUser } from '.';
+import { Schema, model, Document } from "mongoose";
+import { IUser } from ".";
 
 export interface IMessage extends Document {
   message: string;
@@ -7,26 +7,29 @@ export interface IMessage extends Document {
   createdAt: Date;
 }
 
-const messageSchema = new Schema({
-  message: {
-    type: String,
-    required: true,
+const messageSchema = new Schema(
+  {
+    message: {
+      type: String,
+      required: true,
+    },
+    user: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    createdAt: {
+      type: Date,
+    },
   },
-  user: {
-    type: Schema.Types.ObjectId,
-    ref: 'User',
-    required: true,
-  },
-  createdAt: {
-    type: Date,
+  {
+    timestamps: {
+      createdAt: true,
+      updatedAt: false,
+    },
   }
-}, {
-  timestamps: {
-    createdAt: true,
-    updatedAt: false,
-  }
-});
+);
 
-export const Message = model<IMessage>('Message', messageSchema);
+export const Message = model<IMessage>("Message", messageSchema);
 
 Message.ensureIndexes();

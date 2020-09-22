@@ -11,9 +11,13 @@ export class HttpError extends Error {
 export class TypedHttpError extends HttpError {
   type: string;
 
-  constructor(message: string | undefined, type: string | undefined, statusCode: number | undefined) {
+  constructor(
+    message: string | undefined,
+    type: string | undefined,
+    statusCode: number | undefined
+  ) {
     super(message, statusCode);
 
-    this.type = type || 'UNKNOWN';
+    this.type = type || "UNKNOWN";
   }
 }
