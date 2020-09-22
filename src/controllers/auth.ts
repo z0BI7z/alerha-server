@@ -4,10 +4,12 @@ import { authServices } from '../services';
 export async function signUp(req: Request, res: Response, next: NextFunction) {
   try {
     const { email, password } = req.body;
-    const user = await authServices.signUp({ email, password });
+    const { token, refreshToken, user } = await authServices.signUp({ email, password });
 
     res.status(200).json({
       message: 'Successfully signed up user.',
+      token,
+      refreshToken,
       user,
     });
 

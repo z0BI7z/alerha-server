@@ -4,6 +4,7 @@ import { IUser } from '.';
 export interface IMessage extends Document {
   message: string;
   user: Schema.Types.ObjectId | IUser;
+  createdAt: Date;
 }
 
 const messageSchema = new Schema({
@@ -15,6 +16,14 @@ const messageSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'User',
     required: true,
+  },
+  createdAt: {
+    type: Date,
+  }
+}, {
+  timestamps: {
+    createdAt: true,
+    updatedAt: false,
   }
 });
 

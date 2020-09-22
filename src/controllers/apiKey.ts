@@ -12,6 +12,7 @@ export async function getApiKey(req: Request, res: Response, next: NextFunction)
       apiKey: apiKey._id,
       document: apiKey,
     });
+
   } catch (error) {
     console.log(error);
 

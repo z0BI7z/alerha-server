@@ -4,6 +4,6 @@ import { isAuth } from '../middleware';
 
 const router = Router();
 
-router.post('/new-message', isAuth, notificationController.receiveMessage);
+router.post('/message', isAuth, notificationController.newMessage);
 
 export default router;

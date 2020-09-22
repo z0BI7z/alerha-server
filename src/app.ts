@@ -4,6 +4,7 @@ import cors from 'cors';
 import mongoose from 'mongoose';
 import { authRoutes, notificationRoutes, apiKeyRoutes } from './routes';
 import { databaseUrl } from './config';
+import { initIoInstance } from './loaders';
 
 async function main() {
   const app = express();
@@ -23,7 +24,7 @@ async function main() {
 
   app.use((req, res) => {
     res.status(404).json({
-      message: 'Does not exist.'
+      message: 'Endpoint does not exist.'
     });
   });
 
@@ -33,7 +34,15 @@ async function main() {
     useCreateIndex: true,
   });
 
-  app.listen(3000);
+  const server = app.listen(3001);
+
+  const io = initIoInstance(server);
+
+  io.on('connection', socket => {
+    socket.on('initialize', userId => {
+      socket.join(userId);
+    });
+  });
 }
 
 main();

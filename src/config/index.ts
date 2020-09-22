@@ -1,4 +1,5 @@
 import { config } from 'dotenv';
+import * as ErrorTypes from './errors';
 
 const envFound = config();
 
@@ -18,4 +19,5 @@ export {
   databaseUrl,
   jwtSecret,
   jwtRefreshSecret,
+  ErrorTypes,
 }

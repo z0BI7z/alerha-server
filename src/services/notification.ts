@@ -1,4 +1,5 @@
 import { HttpError, ApiKey, Message } from '../models';
+import { IMessage } from '../models';
 
 export async function createMessage({ apiKeyId, message }: { apiKeyId: string; message: string }) {
   try {
@@ -17,7 +18,7 @@ export async function createMessage({ apiKeyId, message }: { apiKeyId: string; m
     const newMessage = await Message.create({
       message,
       user: apiKey.user
-    });
+    } as IMessage);
 
     return newMessage;
 

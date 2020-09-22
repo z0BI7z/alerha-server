@@ -64,7 +64,13 @@ export async function signUp({ email, password }: { email: string; password: str
       passwordHash,
     } as IUser);
 
-    return newUser;
+    const { token, refreshToken } = await generateTokenAndRefreshToken(newUser);
+
+    return {
+      token,
+      refreshToken,
+      user: newUser,
+    };
 
   } catch (error) {
     throw error;

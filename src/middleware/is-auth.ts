@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import moment from 'moment';
 import { authServices } from '../services';
 import { HttpError } from '../models';
-import { jwtSecret } from '../config';
+import { jwtSecret, ErrorTypes } from '../config';
 
 export function isAuth(req: Request, res: Response, next: NextFunction) {
   try {
@@ -24,6 +24,7 @@ export function isAuth(req: Request, res: Response, next: NextFunction) {
     console.log(error);
 
     res.json({
+      type: ErrorTypes.INVALID_TOKEN,
       error,
     });
   }
