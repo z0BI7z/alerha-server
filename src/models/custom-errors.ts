@@ -5,6 +5,8 @@ export class HttpError extends Error {
     super(message);
 
     this.statusCode = statusCode || 500;
+
+    Object.setPrototypeOf(this, HttpError.prototype);
   }
 }
 
@@ -19,5 +21,7 @@ export class TypedHttpError extends HttpError {
     super(message, statusCode);
 
     this.type = type || "UNKNOWN";
+
+    Object.setPrototypeOf(this, TypedHttpError.prototype);
   }
 }
