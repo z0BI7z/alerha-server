@@ -16,7 +16,7 @@ export async function signUp(req: Request, res: Response, next: NextFunction) {
       user,
     });
   } catch (error) {
-    throw error;
+    next(error);
   }
 }
 
@@ -36,7 +36,7 @@ export async function login(req: Request, res: Response, next: NextFunction) {
       user,
     });
   } catch (error) {
-    throw error;
+    next(error);
   }
 }
 
@@ -50,7 +50,7 @@ export async function logout(req: Request, res: Response, next: NextFunction) {
       message: "Successfully logged out user.",
     });
   } catch (error) {
-    throw error;
+    next(error);
   }
 }
 
@@ -69,7 +69,7 @@ export async function refreshToken(
       token: newToken,
     });
   } catch (error) {
-    throw error;
+    next(error);
   }
 }
 
@@ -87,7 +87,7 @@ export async function deleteUserRefreshTokens(
       message: "Successfully deleted refresh tokens.",
     });
   } catch (error) {
-    throw error;
+    next(error);
   }
 }
 
@@ -112,7 +112,7 @@ export async function resetEmail(
       refreshToken: newRefreshToken,
     });
   } catch (error) {
-    throw error;
+    next(error);
   }
 }
 
@@ -129,6 +129,6 @@ export async function getUsers(
       users,
     });
   } catch (error) {
-    throw error;
+    next(error);
   }
 }

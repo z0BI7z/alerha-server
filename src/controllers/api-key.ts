@@ -17,7 +17,7 @@ export async function getApiKey(
       document: apiKey,
     });
   } catch (error) {
-    throw error;
+    next(error);
   }
 }
 
@@ -37,6 +37,6 @@ export async function createApiKey(
       document: apiKey,
     });
   } catch (error) {
-    throw error;
+    next(error);
   }
 }

@@ -15,7 +15,7 @@ export async function getApiKey(userId: string) {
     });
 
     if (!apiKey) {
-      const error = new HttpError("User does not have an api key.", 409);
+      const error = new HttpError("User does not have an api key.", 404);
       throw error;
     }
 

@@ -7,7 +7,19 @@ import { jwtSecret, ErrorTypes } from "../config";
 
 export function isAuth(req: Request, res: Response, next: NextFunction) {
   try {
-    const { token } = req.body;
+    let token;
+
+    const authHeader = req.get("Authorization");
+    if (!authHeader) {
+      const error = new TypedHttpError(
+        "No token provided.",
+        ErrorTypes.INVALID_TOKEN,
+        401
+      );
+      throw error;
+    }
+
+    token = authHeader.split(" ")[1];
 
     if (!token) {
       const error = new TypedHttpError(

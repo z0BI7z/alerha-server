@@ -25,6 +25,6 @@ export async function newMessage(
       newMessage,
     });
   } catch (error) {
-    throw error;
+    next(error);
   }
 }

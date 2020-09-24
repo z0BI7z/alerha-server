@@ -8,11 +8,11 @@ router.post("/signup", authController.signUp);
 
 router.post("/login", authController.login);
 
-router.post("/logout", isAuth, authController.logout);
+router.post("/signout", isAuth, authController.logout);
 
 router.get("/users", authController.getUsers);
 
-router.post("/refresh-token", isAuth, authController.refreshToken);
+router.post("/refresh-token", authController.refreshToken);
 
 router.delete("/refresh-token", isAuth, authController.deleteUserRefreshTokens);
 

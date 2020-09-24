@@ -7,7 +7,7 @@ import { databaseUrl } from "./config";
 import { initIoInstance } from "./loaders";
 import { errorHandler } from "./utils";
 
-async function main() {
+function createServer() {
   const app = express();
 
   app.use(cors());
@@ -31,13 +31,19 @@ async function main() {
 
   app.use(errorHandler);
 
+  const server = app.listen(3001);
+
+  return server;
+}
+
+async function main() {
   await mongoose.connect(databaseUrl, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true,
   });
 
-  const server = app.listen(3001);
+  const server = createServer();
 
   const io = initIoInstance(server);
 
