@@ -7,6 +7,8 @@ function errorHandler(
   res: Response,
   next: NextFunction
 ) {
+  console.log(error.message);
+
   if (error instanceof TypedHttpError) {
     res.status(error.statusCode).json({
       type: error.type,

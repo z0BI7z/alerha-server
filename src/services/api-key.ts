@@ -1,12 +1,17 @@
 import { apiKeyController } from "../controllers";
-import { HttpError, User, ApiKey } from "../models";
+import { TypedHttpError, HttpError, User, ApiKey } from "../models";
+import { ErrorTypes } from "../config";
 
 export async function getApiKey(userId: string) {
   try {
     const user = await User.findById(userId);
 
     if (!user) {
-      const error = new HttpError("No user found with id.", 401);
+      const error = new TypedHttpError(
+        "Invalid user id.",
+        ErrorTypes.NO_USER_WITH_USERID,
+        404
+      );
       throw error;
     }
 
@@ -30,7 +35,11 @@ export async function createApiKey(userId: string) {
     const user = await User.findById(userId);
 
     if (!user) {
-      const error = new HttpError("No user found with id.", 401);
+      const error = new TypedHttpError(
+        "Invalid user id.",
+        ErrorTypes.NO_USER_WITH_USERID,
+        404
+      );
       throw error;
     }
 
@@ -39,11 +48,12 @@ export async function createApiKey(userId: string) {
     });
 
     if (existingapiKey) {
-      const error = new HttpError(
-        "An api key already exists for this user.",
-        409
-      );
-      throw error;
+      // const error = new HttpError(
+      //   "An api key already exists for this user.",
+      //   409
+      // );
+      // throw error;
+      await existingapiKey.remove();
     }
 
     const newapiKey = await ApiKey.create({

@@ -48,8 +48,12 @@ async function main() {
   const io = initIoInstance(server);
 
   io.on("connection", (socket) => {
-    socket.on("initialize", (userId) => {
+    socket.on("initialize", (userId: string) => {
+      console.log(`${userId} connected.`);
       socket.join(userId);
+      socket.on("disconnect", () => {
+        console.log(`${userId} disconnected.`);
+      });
     });
   });
 }

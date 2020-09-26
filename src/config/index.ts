@@ -10,7 +10,7 @@ if (envFound.error) {
 process.env.NODE_ENV = process.env.NODE_ENV || "development";
 
 const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
-const databaseUrl = process.env.MONGODB_URI || "mongodb://localhost/auth_demo";
+const databaseUrl = process.env.MONGODB_URI || "mongodb://localhost/alerha";
 const jwtSecret = process.env.JWT_SECRET || "jwt-secret";
 const jwtRefreshSecret = process.env.JWT_REFRESH_SECRET || "jwt-refresh-secret";
 

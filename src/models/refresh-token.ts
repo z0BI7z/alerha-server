@@ -1,9 +1,9 @@
-import { Schema, model, Document } from "mongoose";
+import { Schema, Types, model, Document } from "mongoose";
 import { IUser } from ".";
 
 export interface IRefreshToken extends Document {
   token: string;
-  user: Schema.Types.ObjectId | IUser;
+  user: Types.ObjectId | IUser;
   createdAt: Date;
   expiration: Date;
 }
@@ -16,7 +16,7 @@ const refreshTokenSchema = new Schema(
       required: true,
     },
     user: {
-      type: Schema.Types.ObjectId,
+      type: Types.ObjectId,
       ref: "User",
       required: true,
     },

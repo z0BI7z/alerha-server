@@ -1,11 +1,47 @@
-import { HttpError, ApiKey, Message } from "../models";
+import { Types } from "mongoose";
+import { TypedHttpError, HttpError, Message, User } from "../models";
 import { IMessage } from "../models";
+import { ErrorTypes } from "../config";
+
+export async function getMessages({
+  userId,
+  amount,
+  skip,
+}: {
+  userId: string;
+  amount: number;
+  skip: number;
+}) {
+  try {
+    const user = await User.findById(userId);
+
+    if (!user) {
+      const error = new TypedHttpError(
+        "Invalid user id.",
+        ErrorTypes.NO_USER_WITH_USERID,
+        404
+      );
+      throw error;
+    }
+
+    const messages = await Message.find({ user })
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(amount);
+
+    return messages;
+  } catch (error) {
+    throw error;
+  }
+}
 
 export async function createMessage({
   apiKeyId,
+  userId,
   message,
 }: {
   apiKeyId: string;
+  userId: string;
   message: string;
 }) {
   try {
@@ -14,16 +50,11 @@ export async function createMessage({
       throw error;
     }
 
-    const apiKey = await ApiKey.findById(apiKeyId);
-
-    if (!apiKey) {
-      const error = new HttpError("Invalid api key.", 401);
-      throw error;
-    }
+    const user = new Types.ObjectId(userId);
 
     const newMessage = await Message.create({
       message,
-      user: apiKey.user,
+      user,
     } as IMessage);
 
     return newMessage;

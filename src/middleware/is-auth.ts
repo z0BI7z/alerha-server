@@ -48,8 +48,6 @@ export function isAuth(req: Request, res: Response, next: NextFunction) {
 
     next();
   } catch (error) {
-    console.log(error);
-
-    throw error;
+    next(error);
   }
 }

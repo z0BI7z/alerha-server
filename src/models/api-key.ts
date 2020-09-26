@@ -1,13 +1,13 @@
-import { Schema, model, Document } from "mongoose";
+import { Schema, Types, model, Document } from "mongoose";
 import { IUser } from ".";
 
 export interface IApiKey extends Document {
-  user: Schema.Types.ObjectId | IUser;
+  user: Types.ObjectId | IUser;
 }
 
 const apiKeySchema = new Schema({
   user: {
-    type: Schema.Types.ObjectId,
+    type: Types.ObjectId,
     ref: "User",
     required: true,
     unique: true,
