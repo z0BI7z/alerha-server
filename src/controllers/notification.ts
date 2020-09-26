@@ -33,6 +33,7 @@ export async function createMessage(
   try {
     const apiKeyId = req.apiKeyId!;
     const userId = req.userId!;
+    const tempId = req.query.tempId;
     const { message } = req.body;
 
     const newMessage = await notificationServices.createMessage({
@@ -42,7 +43,7 @@ export async function createMessage(
     });
 
     const io = getIoInstance();
-    io.to(req.userId!).emit("new-message", newMessage);
+    io.to(req.userId!).emit("new-message", { newMessage, tempId });
 
     res.status(200).json({
       message: "Successfully created new message.",
