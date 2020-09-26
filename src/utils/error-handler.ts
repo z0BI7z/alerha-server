@@ -11,15 +11,18 @@ function errorHandler(
 
   if (error instanceof TypedHttpError) {
     res.status(error.statusCode).json({
+      ...req.additionalErrorInfo,
       type: error.type,
       message: error.message,
     });
   } else if (error instanceof HttpError) {
     res.status(error.statusCode).json({
+      ...req.additionalErrorInfo,
       message: error.message,
     });
   } else {
     res.status(500).json({
+      ...req.additionalErrorInfo,
       message: error.message || "Unknown error",
     });
   }

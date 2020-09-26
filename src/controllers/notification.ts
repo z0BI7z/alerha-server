@@ -30,11 +30,12 @@ export async function createMessage(
   res: Response,
   next: NextFunction
 ) {
-  try {
-    const apiKeyId = req.apiKeyId!;
-    const userId = req.userId!;
-    const { message } = req.body;
+  const apiKeyId = req.apiKeyId!;
+  const userId = req.userId!;
+  const { message }: { message: string } = req.body;
+  const tempId = req.query.tempId;
 
+  try {
     const newMessage = await notificationServices.createMessage({
       apiKeyId,
       userId,
@@ -42,13 +43,16 @@ export async function createMessage(
     });
 
     const io = getIoInstance();
-    io.to(req.userId!).emit("new-message", newMessage);
+    io.to(req.userId!).emit("new-message", { newMessage, tempId });
 
     res.status(200).json({
       message: "Successfully created new message.",
       newMessage,
     });
   } catch (error) {
+    if (tempId) {
+      req.additionalErrorInfo = { tempId };
+    }
     next(error);
   }
 }
