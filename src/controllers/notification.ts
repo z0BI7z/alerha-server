@@ -30,10 +30,18 @@ export async function createMessage(
   res: Response,
   next: NextFunction
 ) {
+<<<<<<< HEAD
   const apiKeyId = req.apiKeyId!;
   const userId = req.userId!;
   const { message }: { message: string } = req.body;
   const tempId = req.query.tempId;
+=======
+  try {
+    const apiKeyId = req.apiKeyId!;
+    const userId = req.userId!;
+    const tempId = req.query.tempId;
+    const { message } = req.body;
+>>>>>>> 61c1609f4126ad432758a1cfce3c6d767cfcde4e
 
   try {
     const newMessage = await notificationServices.createMessage({
