@@ -1,4 +1,5 @@
 import { Types } from "mongoose";
+import moment from "moment";
 import { TypedHttpError, HttpError, Message, User } from "../models";
 import { IMessage } from "../models";
 import { ErrorTypes } from "../config";
@@ -58,6 +59,34 @@ export async function createMessage({
     } as IMessage);
 
     return newMessage;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function deleteMessages({
+  userId,
+  date,
+}: {
+  userId: string;
+  date?: string;
+}) {
+  const user = new Types.ObjectId(userId);
+
+  try {
+    let deletedMessages;
+
+    if (!date) {
+      deletedMessages = await Message.deleteMany({ user });
+    } else {
+      const parsedDate = moment(date).toDate();
+      deletedMessages = await Message.deleteMany({
+        user,
+        createdAt: { $lte: parsedDate },
+      });
+    }
+
+    return deletedMessages;
   } catch (error) {
     throw error;
   }

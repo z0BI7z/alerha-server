@@ -8,4 +8,6 @@ router.get("/message", isAuth, notificationController.getMessages);
 
 router.post("/message", isValidApiKey, notificationController.createMessage);
 
+router.delete("/message", isAuth, notificationController.deleteMessages);
+
 export default router;

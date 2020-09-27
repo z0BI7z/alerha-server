@@ -116,7 +116,6 @@ export async function login({
     }
 
     const isValidPassword = await bcrypt.compare(password, user.passwordHash);
-
     if (!isValidPassword) {
       const error = new HttpError("Invalid password.", 401);
       throw error;
@@ -191,12 +190,9 @@ export async function deleteRefreshToken(token: string) {
 }
 
 // Delete all refresh tokens for a user.
-export async function deleteUserRefreshTokens(token: string) {
+export async function deleteUserRefreshTokens(userId: string) {
   try {
-    const { email } = jwt.verify(token, jwtSecret) as DecodedToken;
-    const user = await User.findOne({
-      email,
-    });
+    const user = await User.findById(userId);
 
     if (!user) {
       const error = new HttpError("Email not in use.", 404);
@@ -213,15 +209,13 @@ export async function deleteUserRefreshTokens(token: string) {
 
 // Reset email.
 export async function resetEmail({
-  token,
+  userId,
   newEmail,
 }: {
-  token: string;
+  userId: string;
   newEmail: string;
 }) {
   try {
-    const { userId } = jwt.verify(token, jwtSecret) as DecodedToken;
-
     const user = await User.findById(userId);
 
     if (!user) {
@@ -239,6 +233,71 @@ export async function resetEmail({
     }
 
     user.email = newEmail;
+    await user.save();
+
+    await RefreshToken.deleteMany({
+      user,
+    });
+
+    const {
+      token: newToken,
+      refreshToken: newRefreshToken,
+    } = await generateTokenAndRefreshToken(user);
+
+    return {
+      user,
+      token: newToken,
+      refreshToken: newRefreshToken,
+    };
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function confirmPassword({
+  userId,
+  password,
+}: {
+  userId: string;
+  password: string;
+}) {
+  try {
+    const user = await User.findById(userId);
+
+    if (!user) {
+      const error = new HttpError("Invalid user id.", 404);
+      throw error;
+    }
+
+    const isValidPassword = await bcrypt.compare(password, user.passwordHash);
+    if (!isValidPassword) {
+      const error = new HttpError("Invalid password.", 401);
+      throw error;
+    }
+
+    return user;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function resetPassword({
+  userId,
+  newPassword,
+}: {
+  userId: string;
+  newPassword: string;
+}) {
+  try {
+    const user = await User.findById(userId);
+
+    if (!user) {
+      const error = new HttpError("Invalid user id.", 404);
+      throw error;
+    }
+
+    const newPasswordHash = await bcrypt.hash(newPassword, 12);
+    user.passwordHash = newPasswordHash;
     await user.save();
 
     await RefreshToken.deleteMany({
