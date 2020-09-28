@@ -4,7 +4,7 @@ import cors from "cors";
 import mongoose from "mongoose";
 import path from "path";
 import { authRoutes, notificationRoutes, apiKeyRoutes } from "./routes";
-import { databaseUrl } from "./config";
+import { databaseUrl, port } from "./config";
 import { initIoInstance } from "./loaders";
 import { errorHandler } from "./utils";
 
@@ -27,7 +27,7 @@ function createServer() {
 
   app.use(errorHandler);
 
-  const server = app.listen(3001);
+  const server = app.listen(port);
 
   return server;
 }
