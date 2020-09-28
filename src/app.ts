@@ -2,6 +2,7 @@ import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
 import mongoose from "mongoose";
+import path from "path";
 import { authRoutes, notificationRoutes, apiKeyRoutes } from "./routes";
 import { databaseUrl } from "./config";
 import { initIoInstance } from "./loaders";
@@ -19,14 +20,9 @@ function createServer() {
 
   app.use("/api-key", apiKeyRoutes);
 
-  app.get("/", (req, res) => {
-    res.status(200).json("Hey");
-  });
-
-  app.use((req, res) => {
-    res.status(404).json({
-      message: "Endpoint does not exist.",
-    });
+  app.use(express.static(path.join(__dirname, "client")));
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "client", "index.html"));
   });
 
   app.use(errorHandler);

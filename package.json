@@ -6,7 +6,8 @@
   "scripts": {
     "compile": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "debug": "ts-node-dev --respawn --files src/app.ts"
+    "debug": "ts-node-dev --respawn --files src/app.ts",
+    "start": "node dist/app.js"
   },
   "keywords": [],
   "author": "",
