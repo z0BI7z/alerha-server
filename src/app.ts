@@ -1,4 +1,5 @@
 import express from "express";
+import compression from "compression";
 import bodyParser from "body-parser";
 import cors from "cors";
 import mongoose from "mongoose";
@@ -11,6 +12,7 @@ import { errorHandler } from "./utils";
 function createServer() {
   const app = express();
 
+  app.use(compression());
   app.use(cors());
   app.use(bodyParser.json());
 
