@@ -3,10 +3,15 @@ import { authServices } from "../services";
 
 export async function signUp(req: Request, res: Response, next: NextFunction) {
   try {
-    const { email, password }: { email: string; password: string } = req.body;
+    const {
+      email,
+      password,
+      recaptchaToken,
+    }: { email: string; password: string; recaptchaToken: string } = req.body;
     const { token, refreshToken, user } = await authServices.signUp({
       email,
       password,
+      recaptchaToken,
     });
 
     res.status(200).json({

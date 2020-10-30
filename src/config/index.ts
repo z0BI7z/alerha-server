@@ -12,3 +12,6 @@ export const databaseUrl =
 export const jwtSecret = process.env.JWT_SECRET || "jwt-secret";
 export const jwtRefreshSecret =
   process.env.JWT_REFRESH_SECRET || "jwt-refresh-secret";
+
+export const RECAPTCHA_SECRET = process.env.RECAPTCHA_SECRET || "";
+export const RECAPTCHA_VALID_HOST = process.env.RECAPTCHA_VALID_HOST || "";

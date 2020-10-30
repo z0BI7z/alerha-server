@@ -1,7 +1,13 @@
+import axios from "axios";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import moment from "moment";
-import { jwtSecret, jwtRefreshSecret, ErrorTypes } from "../config";
+import {
+  jwtSecret,
+  jwtRefreshSecret,
+  ErrorTypes,
+  RECAPTCHA_SECRET,
+} from "../config";
 import {
   HttpError,
   TypedHttpError,
@@ -64,11 +70,25 @@ async function generateTokenAndRefreshToken(user: IUser) {
 export async function signUp({
   email,
   password,
+  recaptchaToken,
 }: {
   email: string;
   password: string;
+  recaptchaToken: string;
 }) {
   try {
+    const recaptchaUrl = `https://www.google.com/recaptcha/api/siteverify?secret=${RECAPTCHA_SECRET}&response=${recaptchaToken}`;
+    const recaptchaResponse = await axios.post(recaptchaUrl);
+    const {
+      success,
+      score,
+    }: { success: boolean; score: number } = recaptchaResponse.data;
+
+    if (!success || score < 0.3) {
+      const error = new HttpError("reCAPTCHA invalid.", 409);
+      throw error;
+    }
+
     const userWithMatchedEmail = await User.findOne({
       email,
     });
