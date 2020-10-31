@@ -7,7 +7,7 @@ process.env.NODE_ENV = process.env.NODE_ENV || "development";
 
 export const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 3001;
 export const databaseUrl =
-  process.env.MONGODB_URI || "mongodb://localhost/alerha";
+  process.env.MONGODB_URI || "mongodb://localhost:27017/alerha";
 
 export const jwtSecret = process.env.JWT_SECRET || "jwt-secret";
 export const jwtRefreshSecret =
