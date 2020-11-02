@@ -1,3 +1,3 @@
 # Alerha Server
 
-Server side for [alerha.com](alerha.com).
+Server side for [alerha.com](https://alerha.com).
