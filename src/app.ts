@@ -57,6 +57,8 @@ async function main() {
       });
     });
   });
+
+  console.log("Server started!");
 }
 
 main();

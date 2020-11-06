@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "compile": "tsc",
+    "compile": "rm -r dist/* && tsc",
     "test": "echo \"Error: no test specified\" && exit 1",
     "debug": "ts-node-dev --respawn --files src/app.ts",
     "start": "node dist/app.js"
