@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "compile": "rm -r dist/* && tsc",
+    "clean": "rm -rf dist/*",
+    "compile": "npm run clean && tsc",
     "test": "echo \"Error: no test specified\" && exit 1",
     "debug": "ts-node-dev --respawn --files src/app.ts",
     "start": "node dist/app.js"
