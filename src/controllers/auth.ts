@@ -108,9 +108,6 @@ export async function resetEmail(
   try {
     const userId = req.userId!;
     const newEmail: string = req.body.newEmail!;
-    const password: string = req.body.password!;
-
-    await authServices.confirmPassword({ userId, password });
 
     const {
       user,
