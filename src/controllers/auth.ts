@@ -1,5 +1,9 @@
-import { Request, Response, NextFunction } from "express";
-import { authServices } from "../services";
+import bcrypt from 'bcrypt';
+import { NextFunction, Request, Response } from 'express';
+import jwt from 'jsonwebtoken';
+import { jwtSecret } from '../config';
+import { HttpError, User } from '../models';
+import { authServices } from '../services';
 
 export async function signUp(req: Request, res: Response, next: NextFunction) {
   try {
@@ -15,7 +19,7 @@ export async function signUp(req: Request, res: Response, next: NextFunction) {
     });
 
     res.status(200).json({
-      message: "Successfully signed up user.",
+      message: 'Successfully signed up user.',
       token,
       refreshToken,
       user,
@@ -35,7 +39,7 @@ export async function login(req: Request, res: Response, next: NextFunction) {
     });
 
     res.status(200).json({
-      message: "Successfully logged in user.",
+      message: 'Successfully logged in user.',
       token,
       refreshToken,
       user,
@@ -52,7 +56,7 @@ export async function logout(req: Request, res: Response, next: NextFunction) {
     await authServices.deleteRefreshToken(refreshToken);
 
     res.status(200).json({
-      message: "Successfully logged out user.",
+      message: 'Successfully logged out user.',
     });
   } catch (error) {
     next(error);
@@ -70,7 +74,7 @@ export async function refreshToken(
     const newToken = await authServices.refreshToken(refreshToken);
 
     res.status(200).json({
-      message: "Successfully refreshed token.",
+      message: 'Successfully refreshed token.',
       token: newToken,
     });
   } catch (error) {
@@ -89,7 +93,7 @@ export async function deleteUserRefreshTokens(
     await authServices.deleteUserRefreshTokens(userId);
 
     res.status(200).json({
-      message: "Successfully deleted refresh tokens.",
+      message: 'Successfully deleted refresh tokens.',
     });
   } catch (error) {
     next(error);
@@ -115,7 +119,7 @@ export async function resetEmail(
     } = await authServices.resetEmail({ userId, newEmail });
 
     res.status(200).json({
-      message: "Successfully updated email.",
+      message: 'Successfully updated email.',
       user,
       token: newToken,
       refreshToken: newRefreshToken,
@@ -146,7 +150,7 @@ export async function resetPassword(
     } = await authServices.resetPassword({ userId, newPassword });
 
     res.status(200).json({
-      message: "Successfully updated password.",
+      message: 'Successfully updated password.',
       user,
       token: newToken,
       refreshToken: newRefreshToken,
@@ -165,9 +169,102 @@ export async function getUsers(
     const users = await authServices.getUsers();
 
     res.status(200).json({
-      message: "Successfully got users.",
+      message: 'Successfully got users.',
       users,
     });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function postForgotPassword(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const email = <string>req.body.email;
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      throw new HttpError(`No user exists with email ${email}.`, 404);
+    }
+
+    const resetToken = jwt.sign({ email }, jwtSecret, {
+      expiresIn: '10m',
+    });
+
+    user.resetToken = resetToken;
+    await user.save();
+
+    res.status(200).send();
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function getCheckResetPasswordToken(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const resetToken = <string>req.query.resetToken;
+
+    const user = await User.findOne({ resetToken });
+    if (!user) {
+      throw new HttpError(
+        `No user exists with reset token ${resetToken}.`,
+        404
+      );
+    }
+
+    const { exp } = jwt.verify(resetToken, jwtSecret) as {
+      exp: number;
+    };
+
+    if (Date.now() - exp * 1000 > 0) {
+      throw new HttpError(`Reset token expired.`, 404);
+    }
+
+    res.status(200).send();
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function postResetPasswordUsingResetToken(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const { resetToken, newPassword } = <
+      { resetToken: string; newPassword: string }
+    >req.body;
+
+    const user = await User.findOne({ resetToken });
+    if (!user) {
+      throw new HttpError(
+        `No user exists with reset token ${resetToken}.`,
+        404
+      );
+    }
+
+    const { exp } = jwt.verify(resetToken, jwtSecret) as {
+      exp: number;
+    };
+
+    if (Date.now() - exp * 1000 > 0) {
+      throw new HttpError(`Reset token expired.`, 404);
+    }
+
+    const newPasswordHash = await bcrypt.hash(newPassword, 12);
+    user.passwordHash = newPasswordHash;
+    user.resetToken = undefined;
+    await user.save();
+
+    res.status(200).send();
   } catch (error) {
     next(error);
   }

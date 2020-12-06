@@ -1,8 +1,9 @@
-import { Schema, model, Document } from "mongoose";
+import { Document, model, Schema } from 'mongoose';
 
 export interface IUser extends Document {
   email: string;
   passwordHash: string;
+  resetToken?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -18,6 +19,11 @@ const userSchema = new Schema(
       type: String,
       required: true,
     },
+    resetToken: {
+      type: String,
+      unique: true,
+      sparse: true,
+    },
     createdAt: {
       type: Date,
     },
@@ -30,6 +36,6 @@ const userSchema = new Schema(
   }
 );
 
-export const User = model<IUser>("User", userSchema);
+export const User = model<IUser>('User', userSchema);
 
 User.ensureIndexes();

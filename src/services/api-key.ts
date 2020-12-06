@@ -1,6 +1,5 @@
-import { apiKeyController } from "../controllers";
-import { TypedHttpError, HttpError, User, ApiKey } from "../models";
 import { ErrorTypes } from "../config";
+import { ApiKey, HttpError, TypedHttpError, User } from "../models";
 
 export async function getApiKey(userId: string) {
   try {
