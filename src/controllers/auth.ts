@@ -1,7 +1,8 @@
 import bcrypt from 'bcrypt';
 import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
-import { jwtSecret } from '../config';
+import { CLIENT_URL, jwtSecret, SG_MAIL_SENDER } from '../config';
+import sgMail from '../loaders/sendgrid-mail';
 import { HttpError, User } from '../models';
 import { authServices } from '../services';
 
@@ -188,11 +189,24 @@ export async function postForgotPassword(
     }
 
     const resetToken = jwt.sign({ email }, jwtSecret, {
-      expiresIn: '10m',
+      expiresIn: '15m',
     });
 
     user.resetToken = resetToken;
     await user.save();
+
+    const resetUrl = `${CLIENT_URL}/account/reset/password/${resetToken}`;
+
+    const msg = {
+      to: email,
+      from: SG_MAIL_SENDER,
+      subject: 'Reset Password',
+      html: `
+        <p>Please reset your password using the following link: <p>
+        <a href="${resetUrl}">${resetUrl}</a>
+      `,
+    };
+    await sgMail.send(msg);
 
     res.status(200).send();
   } catch (error) {
@@ -210,10 +224,7 @@ export async function getCheckResetPasswordToken(
 
     const user = await User.findOne({ resetToken });
     if (!user) {
-      throw new HttpError(
-        `No user exists with reset token ${resetToken}.`,
-        404
-      );
+      throw new HttpError(`No user exists with given reset token.`, 404);
     }
 
     const { exp } = jwt.verify(resetToken, jwtSecret) as {
@@ -242,10 +253,7 @@ export async function postResetPasswordUsingResetToken(
 
     const user = await User.findOne({ resetToken });
     if (!user) {
-      throw new HttpError(
-        `No user exists with reset token ${resetToken}.`,
-        404
-      );
+      throw new HttpError(`No user exists with given reset token.`, 404);
     }
 
     const { exp } = jwt.verify(resetToken, jwtSecret) as {
